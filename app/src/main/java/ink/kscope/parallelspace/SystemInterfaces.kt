@@ -30,17 +30,9 @@ import java.lang.RuntimeException
 
 class SystemInterfaces {
     companion object {
-        fun getUserApplications(
-            packageManager: PackageManager,
-            userId: Int
-        ): List<ApplicationInfo> {
-            val all = ArrayList(packageManager.getInstalledApplicationsAsUser(0, userId))
-            val system = arrayListOf<ApplicationInfo>()
-            for (app in all) {
-                if ((app.isSystemApp()))
-                    system.add(app)
-            }
-            return all - system
+        fun getUserApplications(packageManager: PackageManager, userId: Int): List<ApplicationInfo> {
+            val all = packageManager.getInstalledApplicationsAsUser(0, userId)
+            return all.filter { app -> (app.flags and ApplicationInfo.FLAG_SYSTEM) == 0 }
         }
 
         fun getCurrentUserId(context: Context): Int {
